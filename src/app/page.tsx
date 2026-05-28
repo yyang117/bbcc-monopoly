@@ -40,17 +40,32 @@ function ConfettiShower() {
 function StatNum({ value, format }: { value: number; format?: (v: number) => string }) {
   const prevRef = useRef(value);
   const [flashClass, setFlashClass] = useState('');
+  const [delta, setDelta] = useState<{ key: number; value: number } | null>(null);
   const display = format ? format(value) : String(value);
 
   useEffect(() => {
     if (prevRef.current === value) return;
-    setFlashClass(value > prevRef.current ? 'stat-up' : 'stat-down');
+    const diff = value - prevRef.current;
+    setFlashClass(diff > 0 ? 'stat-up' : 'stat-down');
+    setDelta({ key: Date.now(), value: diff });
     prevRef.current = value;
-    const t = setTimeout(() => setFlashClass(''), 600);
+    const t = setTimeout(() => setFlashClass(''), 650);
     return () => clearTimeout(t);
   }, [value]);
 
-  return <span className={`gs-num ${flashClass}`}>{display}</span>;
+  return (
+    <>
+      {delta && (
+        <span
+          key={delta.key}
+          className={`stat-delta ${delta.value > 0 ? 'stat-delta-up' : 'stat-delta-down'}`}
+        >
+          {delta.value > 0 ? '+' : ''}{format ? format(delta.value) : delta.value}
+        </span>
+      )}
+      <span className={`gs-num ${flashClass}`}>{display}</span>
+    </>
+  );
 }
 
 /* Real dice face with dots */
