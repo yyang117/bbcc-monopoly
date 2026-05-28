@@ -458,8 +458,8 @@ body::before {
   box-shadow: var(--glow-pink), 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
   background: #585858;
 }
-.tile-past .tile-inner { opacity: 0.5; }
-.tile-future .tile-inner { opacity: 0.35; }
+.tile-past .tile-inner { opacity: 1; }
+.tile-future .tile-inner { opacity: 1; }
 
 /* Category accents — refined left stripe */
 .tile-cat-start .tile-inner   { border-left: 3px solid var(--pink); }

@@ -40,6 +40,14 @@
 - **Tailwind CSS**
 - **Vercel** 部署
 
+## 🎨 UI 设计
+
+- 暗色 Hello Kitty 主题，粉色主调配深灰底色
+- 矩形环形棋盘（6×5 外圈），骰子嵌入地图中央
+- 精致细节：1px 半透明边框、多层阴影、毛玻璃弹窗、按钮悬停微抬动效
+- 可爱爆炸头 Hello Kitty 角色在格子上行走，腿部摆动动画
+- 所有格子常亮，当前格粉色辉光高亮
+
 ## 📦 本地开发
 
 ```bash
@@ -51,7 +59,8 @@ npm run dev
 
 ## 🚀 部署
 
-已部署至 Vercel：https://bbcc-monopoly.vercel.app
+- **线上地址**：https://bbcc-monopoly.vercel.app
+- **GitHub 仓库**：https://github.com/yyang117/bbcc-monopoly
 
 ```bash
 vercel --prod
