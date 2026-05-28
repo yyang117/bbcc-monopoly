@@ -6,7 +6,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '🗺️ 物流维护BC仓网覆盖关系',
     description: '系统正在维护BC仓网覆盖关系，您的仓网版图正在生成中……需要原地等待，系统还顺手扣了一笔维护服务费。',
     autoPass: true,
-    autoEffect: { sanity: -18, cash: -8000, stuckTurns: 1 } as Partial<PlayerState>,
+    autoEffect: { sanity: -10, cash: -5000, stuckTurns: 1 } as Partial<PlayerState>,
   }),
 
   // 格子1：大礼包（少给点）
@@ -51,7 +51,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '⏳ 物流数据创建中',
     description: '后台系统数据创建中，请耐心等待……对接BD三次、打电话催了两遍，终于有回音了。',
     autoPass: true,
-    autoEffect: { sanity: -15, stuckTurns: 1 } as Partial<PlayerState>,
+    autoEffect: { sanity: -8, stuckTurns: 1 } as Partial<PlayerState>,
   }),
 
   // 格子5：京麦权限，但开通过程被坑
@@ -69,7 +69,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '🤖 算法C仓选品中',
     description: '智能算法正在选品，结果迟迟不来，客服说"系统正在优化"……等了两天还收了技术服务费。',
     autoPass: true,
-    autoEffect: { sanity: -20, cash: -12000, stuckTurns: 2 } as Partial<PlayerState>,
+    autoEffect: { sanity: -12, cash: -8000, stuckTurns: 1 } as Partial<PlayerState>,
   }),
 
   // 格子7：销量预测，结果不准扣血压
@@ -77,7 +77,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '📊 开始销量预测',
     description: '销量预测模型跑完了，预测准确率62%……比扔硬币强一点点。还需要等待系统同步。',
     autoPass: true,
-    autoEffect: { sanity: -10, stuckTurns: 1 } as Partial<PlayerState>,
+    autoEffect: { sanity: -8, stuckTurns: 1 } as Partial<PlayerState>,
   }),
 
   // 格子8：自动补货配置，操作复杂血压扣
@@ -85,7 +85,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '⚙️ 自动补货配置中',
     description: '自动补货规则配置页面有28个参数需要填写，填到第25个发现页面超时……重新填。',
     autoPass: true,
-    autoEffect: { sanity: -15, stuckTurns: 1 } as Partial<PlayerState>,
+    autoEffect: { sanity: -8, stuckTurns: 1 } as Partial<PlayerState>,
   }),
 
   // 格子9：需求单，选项惩罚加重
@@ -189,7 +189,7 @@ const TILE_EVENTS: Record<number, (p: PlayerState) => TileEvent> = {
     title: '🧾 查询账单',
     description: '账单出来了——运费、仓储费、增值服务费、系统使用费……每一项单独看都合理，加起来看直接血压拉满。',
     autoPass: true,
-    autoEffect: { sanity: -20, cash: -10000 },
+    autoEffect: { sanity: -12, cash: -10000 },
   }),
 
   // 格子16：支付，最终费用加重

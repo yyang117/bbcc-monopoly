@@ -62,7 +62,7 @@ export interface Tile {
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
-  cash: 120000,
+  cash: 150000,
   inventoryFactory: 1000,
   inventoryB: 0,
   inventoryC: 0,

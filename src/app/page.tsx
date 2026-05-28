@@ -150,7 +150,7 @@ function OnboardingScreen({ onStart }: { onStart: (name: string) => void }) {
               <div className="ob-tip"><span>🎲</span>掷骰子沿流程前进，触发供应链事件</div>
             </div>
             <div className="ob-kpi">
-              <div className="kp kp-y"><div className="kp-l">Cash</div><div className="kp-v">12万</div></div>
+              <div className="kp kp-y"><div className="kp-l">Cash</div><div className="kp-v">15万</div></div>
               <div className="kp kp-b"><div className="kp-l">工厂库存</div><div className="kp-v">1000件</div></div>
               <div className="kp kp-g"><div className="kp-l">京仓库存</div><div className="kp-v">0件</div></div>
               <div className="kp kp-o"><div className="kp-l">现货率</div><div className="kp-v">0%</div></div>
@@ -238,7 +238,7 @@ function GameOverScreen({ player, nickname, onRestart }: { player: PlayerState; 
     ? '血压归零，你已被紧急送医……'
     : player.sanity >= 128
     ? '血压飙到128！高血压危象，紧急送医……'
-    : player.sanity < 82
+    : player.sanity < 78
     ? `血压过低(${player.sanity})！低血压休克，紧急送医……`
     : '资金链断裂，公司已破产……';
 
@@ -444,7 +444,7 @@ export default function Home() {
       setMessage(`${bossName}，血压飙到128！高血压危象，紧急送医！Game Over!`);
       return true;
     }
-    if (p.sanity < 82 && p.sanity > 0) {
+    if (p.sanity < 78 && p.sanity > 0) {
       setGameOver(true);
       setMessage(`${bossName}，血压过低(${p.sanity})！低血压休克，紧急送医！Game Over!`);
       return true;
