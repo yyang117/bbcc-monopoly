@@ -150,7 +150,7 @@ function OnboardingScreen({ onStart }: { onStart: (name: string) => void }) {
               <div className="ob-tip"><span>🎲</span>掷骰子沿流程前进，触发供应链事件</div>
             </div>
             <div className="ob-kpi">
-              <div className="kp kp-y"><div className="kp-l">Cash</div><div className="kp-v">20万</div></div>
+              <div className="kp kp-y"><div className="kp-l">Cash</div><div className="kp-v">12万</div></div>
               <div className="kp kp-b"><div className="kp-l">工厂库存</div><div className="kp-v">1000件</div></div>
               <div className="kp kp-g"><div className="kp-l">京仓库存</div><div className="kp-v">0件</div></div>
               <div className="kp kp-o"><div className="kp-l">现货率</div><div className="kp-v">0%</div></div>
@@ -236,9 +236,9 @@ function WinScreen({ player, nickname, onRestart }: { player: PlayerState; nickn
 function GameOverScreen({ player, nickname, onRestart }: { player: PlayerState; nickname: string; onRestart: () => void }) {
   const reason = player.sanity <= 0
     ? '血压归零，你已被紧急送医……'
-    : player.sanity >= 150
-    ? '血压飙到150！高血压危象，紧急送医……'
-    : player.sanity < 70
+    : player.sanity >= 128
+    ? '血压飙到128！高血压危象，紧急送医……'
+    : player.sanity < 82
     ? `血压过低(${player.sanity})！低血压休克，紧急送医……`
     : '资金链断裂，公司已破产……';
 
@@ -417,7 +417,7 @@ export default function Home() {
     if (effect.inventoryC) u.inventoryC = Math.max(0, u.inventoryC + effect.inventoryC);
     if (effect.oor) u.oor = Math.max(0, Math.min(100, u.oor + effect.oor));
     if (effect.doi) u.doi = Math.max(1, u.doi + effect.doi);
-    if (effect.sanity) u.sanity = Math.max(0, Math.min(120, u.sanity + effect.sanity));
+    if (effect.sanity) u.sanity = Math.max(0, Math.min(130, u.sanity + effect.sanity));
     return u;
   }, []);
 
@@ -439,12 +439,12 @@ export default function Home() {
       setMessage(`${bossName}，你的血压归零了…已紧急送医！Game Over!`);
       return true;
     }
-    if (p.sanity >= 150) {
+    if (p.sanity >= 128) {
       setGameOver(true);
-      setMessage(`${bossName}，血压飙到150！高血压危象，紧急送医！Game Over!`);
+      setMessage(`${bossName}，血压飙到128！高血压危象，紧急送医！Game Over!`);
       return true;
     }
-    if (p.sanity < 70 && p.sanity > 0) {
+    if (p.sanity < 82 && p.sanity > 0) {
       setGameOver(true);
       setMessage(`${bossName}，血压过低(${p.sanity})！低血压休克，紧急送医！Game Over!`);
       return true;
