@@ -279,87 +279,57 @@ function pickScene(resultText: string): SceneType {
   return 'neutral';
 }
 
-/* SVG 小人：猫猫老板（左）*/
+/* 猫猫老板（左）*/
 function SvgBoss({ scene }: { scene: SceneType }) {
-  const armAngle = scene === 'good' ? -50 : scene === 'bad' ? 30 : 0;
-  const mouthPath = scene === 'bad'
+  const mouth = scene === 'bad'
     ? 'M 11 19 Q 15 16 19 19'
     : scene === 'good'
     ? 'M 11 17 Q 15 21 19 17'
     : 'M 12 18 L 18 18';
-
   return (
-    <svg className={`fig-svg fig-boss-${scene}`} width="52" height="90" viewBox="0 0 30 60">
-      {/* 猫耳 */}
-      <polygon points="5,14 9,4 13,14" fill="#f5a0c0" />
-      <polygon points="17,14 21,4 25,14" fill="#f5a0c0" />
-      {/* 头 */}
-      <circle cx="15" cy="18" r="10" fill="#7b5b3a" stroke="#5a3d25" strokeWidth="1" />
-      {/* 眼睛 */}
-      {scene === 'bad'
-        ? <><text x="10" y="20" fontSize="5" fill="#333">＞</text><text x="16" y="20" fontSize="5" fill="#333">＜</text></>
-        : <><circle cx="11" cy="18" r="1.8" fill="#1a1a1a"/><circle cx="19" cy="18" r="1.8" fill="#1a1a1a"/></>
-      }
-      {/* 嘴 */}
-      <path d={mouthPath} stroke="#1a1a1a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      {/* 蝴蝶结 */}
-      <path d="M 21 10 Q 24 8 23 11 Q 24 14 21 12 Q 18 14 19 11 Q 18 8 21 10 Z" fill="#f5a0c0" />
-      {/* 身体 */}
+    <svg className={`fig-svg fig-boss fig-boss-${scene}`} width="56" height="100" viewBox="0 0 30 60">
+      <polygon points="5,14 9,4 13,14"  fill="#f5a0c0"/>
+      <polygon points="17,14 21,4 25,14" fill="#f5a0c0"/>
+      <g className="boss-head">
+        <circle cx="15" cy="18" r="10" fill="#7b5b3a" stroke="#5a3d25" strokeWidth="1"/>
+        {scene === 'bad'
+          ? <><text x="9" y="20" fontSize="5" fill="#555">＞</text><text x="16" y="20" fontSize="5" fill="#555">＜</text></>
+          : <><circle cx="11" cy="18" r="1.8" fill="#1a1a1a"/><circle cx="19" cy="18" r="1.8" fill="#1a1a1a"/></>
+        }
+        <path d={mouth} stroke="#1a1a1a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+        <path d="M 21 10 Q 24 8 23 11 Q 24 14 21 12 Q 18 14 19 11 Q 18 8 21 10 Z" fill="#f5a0c0"/>
+      </g>
       <rect x="8" y="29" width="14" height="16" rx="3" fill="#f5a0c0" stroke="#d4789e" strokeWidth="1"/>
-      {/* 爱心 */}
       <path d="M 13 34 Q 15 32 17 34 Q 19 36 15 39 Q 11 36 13 34 Z" fill="#e74c6f"/>
-      {/* 左臂 */}
-      <rect
-        x="3" y="30" width="5" height="13" rx="2.5"
-        fill="#f5a0c0" stroke="#d4789e" strokeWidth="1"
-        style={{ transformOrigin: '5.5px 30px', transform: `rotate(${-armAngle}deg)` }}
-      />
-      {/* 右臂 */}
-      <rect
-        x="22" y="30" width="5" height="13" rx="2.5"
-        fill="#f5a0c0" stroke="#d4789e" strokeWidth="1"
-        style={{ transformOrigin: '24.5px 30px', transform: `rotate(${armAngle}deg)` }}
-      />
-      {/* 腿 */}
-      <rect x="9" y="44" width="5" height="14" rx="2.5" fill="#555"/>
-      <rect x="16" y="44" width="5" height="14" rx="2.5" fill="#555"/>
+      <rect className="boss-arm-l" x="3"  y="30" width="5" height="13" rx="2.5" fill="#f5a0c0" stroke="#d4789e" strokeWidth="1"/>
+      <rect className="boss-arm-r" x="22" y="30" width="5" height="13" rx="2.5" fill="#f5a0c0" stroke="#d4789e" strokeWidth="1"/>
+      <rect className="boss-leg-l" x="9"  y="44" width="5" height="14" rx="2.5" fill="#555"/>
+      <rect className="boss-leg-r" x="16" y="44" width="5" height="14" rx="2.5" fill="#555"/>
     </svg>
   );
 }
 
-/* SVG 小人：京东小二（右）*/
+/* 京东小二（右）*/
 function SvgJD({ scene }: { scene: SceneType }) {
-  const bodyTilt = scene === 'bad' ? 'rotate(12deg)' : 'rotate(0deg)';
-  const mouthPath = scene === 'bad'
+  const mouth = scene === 'bad'
     ? 'M 11 19 Q 15 16 19 19'
     : 'M 11 17 Q 15 21 19 17';
-
   return (
-    <svg className={`fig-svg fig-jd-${scene}`} width="52" height="90" viewBox="0 0 30 60"
-      style={{ transformOrigin: 'center bottom', transform: bodyTilt }}>
-      {/* 头 */}
-      <circle cx="15" cy="18" r="10" fill="#ffe0b2" stroke="#e0a060" strokeWidth="1"/>
-      {/* JD 帽子 */}
-      <rect x="5" y="7" width="20" height="6" rx="2" fill="#e74c3c"/>
-      <text x="15" y="13" textAnchor="middle" fontSize="4.5" fill="white" fontWeight="bold">JD</text>
-      {/* 眼睛 */}
-      <circle cx="11" cy="18" r="1.8" fill="#1a1a1a"/>
-      <circle cx="19" cy="18" r="1.8" fill="#1a1a1a"/>
-      {/* 嘴 */}
-      <path d={mouthPath} stroke="#1a1a1a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-      {/* 身体 */}
+    <svg className={`fig-svg fig-jd fig-jd-${scene}`} width="56" height="100" viewBox="0 0 30 60">
+      <g className="jd-head">
+        <circle cx="15" cy="18" r="10" fill="#ffe0b2" stroke="#e0a060" strokeWidth="1"/>
+        <rect x="5" y="7" width="20" height="7" rx="2" fill="#e74c3c"/>
+        <text x="15" y="13.5" textAnchor="middle" fontSize="5" fill="white" fontWeight="bold">JD</text>
+        <circle cx="11" cy="19" r="1.8" fill="#1a1a1a"/>
+        <circle cx="19" cy="19" r="1.8" fill="#1a1a1a"/>
+        <path d={mouth} stroke="#1a1a1a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      </g>
       <rect x="8" y="29" width="14" height="16" rx="3" fill="#e74c3c" stroke="#c0392b" strokeWidth="1"/>
-      {/* 左臂 */}
-      <rect x="3" y="30" width="5" height="13" rx="2.5" fill="#e74c3c" stroke="#c0392b" strokeWidth="1"
-        style={{ transformOrigin: '5.5px 30px', transform: scene === 'good' ? 'rotate(50deg)' : 'rotate(0deg)' }}
-      />
-      {/* 右臂 */}
-      <rect x="22" y="30" width="5" height="13" rx="2.5" fill="#e74c3c" stroke="#c0392b" strokeWidth="1"
-        style={{ transformOrigin: '24.5px 30px', transform: scene === 'bad' ? 'rotate(-20deg)' : 'rotate(0deg)' }}
-      />
-      {/* 腿 */}
-      <rect x="9" y="44" width="5" height="14" rx="2.5" fill="#555"/>
-      <rect x="16" y="44" width="5" height="14" rx="2.5" fill="#555"/>
+      <text x="15" y="40" textAnchor="middle" fontSize="5" fill="white" fontWeight="bold">JD</text>
+      <rect className="jd-arm-l" x="3"  y="30" width="5" height="13" rx="2.5" fill="#e74c3c" stroke="#c0392b" strokeWidth="1"/>
+      <rect className="jd-arm-r" x="22" y="30" width="5" height="13" rx="2.5" fill="#e74c3c" stroke="#c0392b" strokeWidth="1"/>
+      <rect className="jd-leg-l" x="9"  y="44" width="5" height="14" rx="2.5" fill="#555"/>
+      <rect className="jd-leg-r" x="16" y="44" width="5" height="14" rx="2.5" fill="#555"/>
     </svg>
   );
 }
@@ -370,9 +340,8 @@ const SCENE_LABELS: Record<SceneType, string> = {
   mix:     '⚖️ 有亮点有 gap，核心链路保住，持续迭代',
   neutral: '🔄 节点推进完毕，静待下阶段效果释放',
 };
-
 const SCENE_EFFECTS: Record<SceneType, string> = {
-  good: '🤝', bad: '💢', mix: '🤔', neutral: '📋',
+  good: '🤝', bad: '💢', mix: '🤷', neutral: '📋',
 };
 
 function SceneDrama({ resultText }: { resultText: string }) {

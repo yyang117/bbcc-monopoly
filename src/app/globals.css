@@ -186,7 +186,7 @@ body::before {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
 }
 .drama-caption {
   text-align: center;
@@ -197,65 +197,299 @@ body::before {
   letter-spacing: 0.3px;
   opacity: 0.85;
 }
+.fig-svg { display: block; overflow: visible; }
 
-/* SVG 小人通用 */
-.fig-svg {
-  display: block;
-  overflow: visible;
-}
-
-/* 中间效果图标 */
+/* 中间 emoji */
 .drama-effect {
   font-size: 28px;
   align-self: center;
   line-height: 1;
-  animation: effectPop 0.5s 0.3s cubic-bezier(0.34,1.8,0.64,1) both;
+  animation: effectPop 0.5s 0.25s cubic-bezier(0.34,1.8,0.64,1) both;
 }
 @keyframes effectPop {
   from { transform: scale(0) rotate(-25deg); opacity: 0; }
   to   { transform: scale(1) rotate(0deg);   opacity: 1; }
 }
 
-/* GOOD：双人走近 */
-.fig-boss-good { animation: slideInRight 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
-.fig-jd-good   { animation: slideInLeft  0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
-@keyframes slideInRight { from { transform: translateX(-22px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slideInLeft  { from { transform: translateX( 22px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+/* ═══ SVG transform-box 让每个元素绕自身旋转 ═══ */
+.boss-head, .boss-arm-l, .boss-arm-r, .boss-leg-l, .boss-leg-r,
+.jd-head,   .jd-arm-l,   .jd-arm-r,   .jd-leg-l,   .jd-leg-r {
+  transform-box: fill-box;
+}
 
-/* BAD：老板弹开 */
-.fig-boss-bad {
-  animation: bossRecoil 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-  transform-origin: center bottom;
+/* ══════════════════════════════════════════
+   GOOD：握手庆祝
+   - 老板：整体从左滑入，右臂高举挥动，双腿欢快交替
+   - 小二：整体从右滑入，左臂伸出握手，双腿小跳
+══════════════════════════════════════════ */
+.fig-boss-good { animation: slideFromLeft 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.fig-jd-good   { animation: slideFromRight 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes slideFromLeft  { from { transform: translateX(-24px); opacity:0; } to { transform: none; opacity:1; } }
+@keyframes slideFromRight { from { transform: translateX( 24px); opacity:0; } to { transform: none; opacity:1; } }
+
+/* 老板右臂高举挥手 */
+.fig-boss-good .boss-arm-r {
+  transform-origin: 50% 0%;
+  animation: bossWave 0.6s 0.45s ease-in-out infinite alternate;
 }
-@keyframes bossRecoil {
-  0%   { transform: translateX(0)   rotate(0); }
-  35%  { transform: translateX(-12px) rotate(-8deg); }
-  100% { transform: translateX(-6px)  rotate(0); }
+@keyframes bossWave {
+  from { transform: rotate(-70deg); }
+  to   { transform: rotate(-40deg); }
 }
-/* JD 鞠躬 */
+/* 老板左臂微微打开 */
+.fig-boss-good .boss-arm-l {
+  transform-origin: 50% 0%;
+  animation: bossArmOpen 0.4s 0.4s ease-out both;
+}
+@keyframes bossArmOpen {
+  from { transform: rotate(0); }
+  to   { transform: rotate(20deg); }
+}
+/* 老板腿欢跳 */
+.fig-boss-good .boss-leg-l {
+  transform-origin: 50% 0%;
+  animation: legKickL 0.5s 0.5s ease-in-out infinite alternate;
+}
+.fig-boss-good .boss-leg-r {
+  transform-origin: 50% 0%;
+  animation: legKickR 0.5s 0.6s ease-in-out infinite alternate;
+}
+@keyframes legKickL { from { transform: rotate(-12deg); } to { transform: rotate(12deg); } }
+@keyframes legKickR { from { transform: rotate(12deg);  } to { transform: rotate(-12deg); } }
+
+/* 小二左臂伸出握手 */
+.fig-jd-good .jd-arm-l {
+  transform-origin: 50% 0%;
+  animation: jdHandshake 0.4s 0.4s ease-out both;
+}
+@keyframes jdHandshake {
+  from { transform: rotate(0); }
+  to   { transform: rotate(-55deg); }
+}
+/* 小二右臂背后 */
+.fig-jd-good .jd-arm-r {
+  transform-origin: 50% 0%;
+  animation: jdArmBack 0.4s 0.4s ease-out both;
+}
+@keyframes jdArmBack {
+  from { transform: rotate(0); }
+  to   { transform: rotate(25deg); }
+}
+/* 小二腿小跳 */
+.fig-jd-good .jd-leg-l {
+  transform-origin: 50% 0%;
+  animation: legKickR 0.5s 0.55s ease-in-out infinite alternate;
+}
+.fig-jd-good .jd-leg-r {
+  transform-origin: 50% 0%;
+  animation: legKickL 0.5s 0.65s ease-in-out infinite alternate;
+}
+
+/* ══════════════════════════════════════════
+   BAD：吵架/崩溃
+   - 老板：原地发抖，双手捂头，腿抖
+   - 小二：鞠躬低头，双臂垂下，腿定
+══════════════════════════════════════════ */
+.fig-boss-bad { animation: bossShake 0.08s 0.1s linear infinite; }
+@keyframes bossShake {
+  0%,100% { transform: translateX(0); }
+  33%     { transform: translateX(-3px); }
+  66%     { transform: translateX(3px); }
+}
+/* 老板头乱晃 */
+.fig-boss-bad .boss-head {
+  transform-origin: 50% 50%;
+  animation: headPanic 0.15s 0.1s linear infinite;
+}
+@keyframes headPanic {
+  0%,100% { transform: rotate(0); }
+  25%     { transform: rotate(-8deg); }
+  75%     { transform: rotate(8deg); }
+}
+/* 老板双臂捂头 */
+.fig-boss-bad .boss-arm-l {
+  transform-origin: 50% 0%;
+  animation: armPanicL 0.3s 0.2s ease-out both;
+}
+.fig-boss-bad .boss-arm-r {
+  transform-origin: 50% 0%;
+  animation: armPanicR 0.3s 0.2s ease-out both;
+}
+@keyframes armPanicL { from { transform: rotate(0); } to { transform: rotate(-100deg); } }
+@keyframes armPanicR { from { transform: rotate(0); } to { transform: rotate(100deg); } }
+/* 老板腿抖 */
+.fig-boss-bad .boss-leg-l {
+  transform-origin: 50% 0%;
+  animation: legTrembleL 0.12s linear infinite;
+}
+.fig-boss-bad .boss-leg-r {
+  transform-origin: 50% 0%;
+  animation: legTrembleR 0.12s 0.06s linear infinite;
+}
+@keyframes legTrembleL { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@keyframes legTrembleR { 0%,100% { transform: rotate(6deg);  } 50% { transform: rotate(-6deg); } }
+
+/* 小二整体鞠躬 */
 .fig-jd-bad {
-  animation: jdBow 0.7s 0.15s ease-in-out both;
-  transform-origin: center bottom;
+  transform-origin: 50% 100%;
+  animation: jdBow 0.6s 0.2s cubic-bezier(0.34,1.2,0.64,1) both;
 }
 @keyframes jdBow {
-  0%,100% { transform: rotate(0deg); }
-  45%     { transform: rotate(18deg); }
+  0%   { transform: rotate(0); }
+  50%  { transform: rotate(22deg); }
+  100% { transform: rotate(16deg); }
 }
+/* 小二头低垂 */
+.fig-jd-bad .jd-head {
+  transform-origin: 50% 100%;
+  animation: jdHeadDown 0.5s 0.3s ease-out both;
+}
+@keyframes jdHeadDown {
+  from { transform: rotate(0); }
+  to   { transform: rotate(10deg); }
+}
+/* 小二双臂垂下夹紧 */
+.fig-jd-bad .jd-arm-l {
+  transform-origin: 50% 0%;
+  animation: armHang 0.4s 0.25s ease-out both;
+}
+.fig-jd-bad .jd-arm-r {
+  transform-origin: 50% 0%;
+  animation: armHangR 0.4s 0.25s ease-out both;
+}
+@keyframes armHang  { from { transform: rotate(0); } to { transform: rotate(15deg); } }
+@keyframes armHangR { from { transform: rotate(0); } to { transform: rotate(-15deg); } }
 
-/* MIX：双人上下摇摆 */
-.fig-boss-mix { animation: figBob 0.9s 0.0s ease-in-out infinite; }
-.fig-jd-mix   { animation: figBob 0.9s 0.25s ease-in-out infinite; }
-@keyframes figBob {
+/* ══════════════════════════════════════════
+   MIX：摊手互相看，各自叹气
+   - 老板：左右摊手，头左右摇
+   - 小二：双臂张开，头点头
+══════════════════════════════════════════ */
+/* 老板整体微微左右晃 */
+.fig-boss-mix { animation: bossSway 1.2s ease-in-out infinite; }
+@keyframes bossSway {
+  0%,100% { transform: rotate(-3deg); }
+  50%     { transform: rotate(3deg); }
+}
+/* 老板头摇 */
+.fig-boss-mix .boss-head {
+  transform-origin: 50% 100%;
+  animation: headShakeNo 0.8s ease-in-out infinite;
+}
+@keyframes headShakeNo {
+  0%,100% { transform: rotate(-10deg); }
+  50%     { transform: rotate(10deg); }
+}
+/* 老板双臂摊开 */
+.fig-boss-mix .boss-arm-l {
+  transform-origin: 50% 0%;
+  animation: armSpreadL 0.9s ease-in-out infinite alternate;
+}
+.fig-boss-mix .boss-arm-r {
+  transform-origin: 50% 0%;
+  animation: armSpreadR 0.9s ease-in-out infinite alternate;
+}
+@keyframes armSpreadL { from { transform: rotate(30deg);  } to { transform: rotate(50deg); } }
+@keyframes armSpreadR { from { transform: rotate(-30deg); } to { transform: rotate(-50deg); } }
+/* 老板腿微摆 */
+.fig-boss-mix .boss-leg-l {
+  transform-origin: 50% 0%;
+  animation: legSway 1.2s ease-in-out infinite;
+}
+.fig-boss-mix .boss-leg-r {
+  transform-origin: 50% 0%;
+  animation: legSway 1.2s 0.4s ease-in-out infinite;
+}
+@keyframes legSway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
+/* 小二整体上下弹 */
+.fig-jd-mix { animation: jdBob 0.9s 0.2s ease-in-out infinite; }
+@keyframes jdBob {
   0%,100% { transform: translateY(0); }
   50%     { transform: translateY(-6px); }
 }
+/* 小二头点头 */
+.fig-jd-mix .jd-head {
+  transform-origin: 50% 100%;
+  animation: headNod 0.9s 0.2s ease-in-out infinite;
+}
+@keyframes headNod {
+  0%,100% { transform: rotate(0); }
+  40%     { transform: rotate(12deg); }
+}
+/* 小二双臂张开摊手 */
+.fig-jd-mix .jd-arm-l {
+  transform-origin: 50% 0%;
+  animation: armSpreadL 1s 0.1s ease-in-out infinite alternate;
+}
+.fig-jd-mix .jd-arm-r {
+  transform-origin: 50% 0%;
+  animation: armSpreadR 1s 0.3s ease-in-out infinite alternate;
+}
 
-/* NEUTRAL：待机呼吸 */
-.fig-boss-neutral { animation: figBreath 1.5s 0.0s ease-in-out infinite; }
-.fig-jd-neutral   { animation: figBreath 1.5s 0.4s ease-in-out infinite; }
-@keyframes figBreath {
-  0%,100% { transform: translateY(0) scaleY(1); }
-  50%     { transform: translateY(-3px) scaleY(1.02); }
+/* ══════════════════════════════════════════
+   NEUTRAL：汇报待机
+   - 老板：腿交替踏步，头轻微点头
+   - 小二：右臂缓慢抬起做汇报手势，左腿交替
+══════════════════════════════════════════ */
+/* 老板踱步 */
+.fig-boss-neutral .boss-leg-l {
+  transform-origin: 50% 0%;
+  animation: stepL 0.7s ease-in-out infinite alternate;
+}
+.fig-boss-neutral .boss-leg-r {
+  transform-origin: 50% 0%;
+  animation: stepR 0.7s 0.35s ease-in-out infinite alternate;
+}
+@keyframes stepL { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+@keyframes stepR { from { transform: rotate(10deg);  } to { transform: rotate(-10deg); } }
+/* 老板头点头 */
+.fig-boss-neutral .boss-head {
+  transform-origin: 50% 100%;
+  animation: headNod 1.4s ease-in-out infinite;
+}
+/* 老板右臂微扬 */
+.fig-boss-neutral .boss-arm-r {
+  transform-origin: 50% 0%;
+  animation: armListen 1.4s ease-in-out infinite alternate;
+}
+@keyframes armListen { from { transform: rotate(-10deg); } to { transform: rotate(-30deg); } }
+
+/* 小二右臂汇报手势循环 */
+.fig-jd-neutral .jd-arm-r {
+  transform-origin: 50% 0%;
+  animation: armReport 1.2s ease-in-out infinite alternate;
+}
+@keyframes armReport {
+  from { transform: rotate(-60deg); }
+  to   { transform: rotate(-20deg); }
+}
+/* 小二左臂夹文件 */
+.fig-jd-neutral .jd-arm-l {
+  transform-origin: 50% 0%;
+  animation: armFile 0.4s ease-out both;
+}
+@keyframes armFile {
+  from { transform: rotate(0); }
+  to   { transform: rotate(20deg); }
+}
+/* 小二头随汇报轻微摆 */
+.fig-jd-neutral .jd-head {
+  transform-origin: 50% 100%;
+  animation: headReport 1.2s ease-in-out infinite alternate;
+}
+@keyframes headReport {
+  from { transform: rotate(-4deg); }
+  to   { transform: rotate(4deg); }
+}
+/* 小二腿踏步 */
+.fig-jd-neutral .jd-leg-l {
+  transform-origin: 50% 0%;
+  animation: stepR 0.7s ease-in-out infinite alternate;
+}
+.fig-jd-neutral .jd-leg-r {
+  transform-origin: 50% 0%;
+  animation: stepL 0.7s 0.35s ease-in-out infinite alternate;
 }
 
 
