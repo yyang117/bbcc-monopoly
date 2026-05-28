@@ -174,7 +174,68 @@ body::before {
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-/* Game over flash overlay */
+/* ─── Scene Drama (小剧场) ─── */
+.drama-stage {
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 56px;
+}
+.drama-line {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.drama-line.jd {
+  flex-direction: row-reverse;
+}
+.drama-avatar {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.drama-bubble {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 82%;
+  word-break: break-all;
+  animation: bubblePop 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.drama-line.boss .drama-bubble {
+  border-bottom-left-radius: 3px;
+  background: rgba(245,160,192,0.1);
+  border-color: rgba(245,160,192,0.2);
+}
+.drama-line.jd .drama-bubble {
+  border-bottom-right-radius: 3px;
+  background: rgba(100,180,255,0.08);
+  border-color: rgba(100,180,255,0.18);
+}
+.drama-cursor {
+  display: inline-block;
+  width: 1px;
+  background: var(--pink);
+  margin-left: 1px;
+  vertical-align: middle;
+  height: 0.9em;
+  animation: blink 0.55s step-end infinite;
+}
+@keyframes bubblePop {
+  from { transform: scale(0.65) translateY(4px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes blink { 50% { opacity: 0; } }
 .gameover-flash {
   position: fixed; inset: 0; z-index: 150;
   background: rgba(231,76,60,0.35);

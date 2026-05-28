@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { PlayerState, TileEvent, SubEvent, TileOption, INITIAL_PLAYER_STATE } from '@/lib/gameTypes';
 import { BOARD_TILES } from '@/lib/board';
 import { triggerLLMEvent } from '@/lib/events';
@@ -263,12 +263,158 @@ function GameOverScreen({ player, nickname, onRestart }: { player: PlayerState; 
   );
 }
 
+/* ─── Scene Drama 台词库 ─── */
+type DramaLine = { role: 'boss' | 'jd'; text: string };
+type Drama = DramaLine[];
+
+const DRAMA_GOOD: Drama[] = [
+  [
+    { role: 'jd', text: '老板！本次操作一切顺利，数据已同步！' },
+    { role: 'boss', text: '不错不错，这才叫专业！继续保持 😎' },
+  ],
+  [
+    { role: 'jd', text: '汇报：本次流程完美执行，账户已到账！' },
+    { role: 'boss', text: '好！给小二加个鸡腿！🍗' },
+    { role: 'jd', text: '……谢谢老板，那我继续跟进后续事项。' },
+  ],
+  [
+    { role: 'boss', text: '这次结果还不错嘛，钱包又鼓了一点！💰' },
+    { role: 'jd', text: '老板运气好，这叫时来运转！' },
+  ],
+];
+
+const DRAMA_BAD: Drama[] = [
+  [
+    { role: 'jd', text: '老板……这次扣了不少，建议下次提前确认哦。' },
+    { role: 'boss', text: '你早说啊！！现在说有什么用！😤' },
+    { role: 'jd', text: '（心想：我上次就说过了……）' },
+  ],
+  [
+    { role: 'boss', text: '又亏了？！我的钱呢？！🤯' },
+    { role: 'jd', text: '老板别激动，血压别太高，这都是正常流程损耗……' },
+    { role: 'boss', text: '正常？！这很正常吗？！' },
+  ],
+  [
+    { role: 'jd', text: '本次扣款已完成，请老板签字确认。' },
+    { role: 'boss', text: '签字？签你个大头鬼！下次我要货比三家！' },
+  ],
+  [
+    { role: 'boss', text: '哎，亏就亏吧，当交学费了……😮‍💨' },
+    { role: 'jd', text: '老板豁达！这笔学费能让您成长的！' },
+    { role: 'boss', text: '说得好听，你来帮我交！' },
+  ],
+];
+
+const DRAMA_MIX: Drama[] = [
+  [
+    { role: 'jd', text: '老板，这次有得有失，整体算持平吧。' },
+    { role: 'boss', text: '持平？持平不就是白忙活了吗！😑' },
+    { role: 'jd', text: '……至少没亏嘛！' },
+  ],
+  [
+    { role: 'boss', text: '这操作，赚了点钱，血压也上去了……' },
+    { role: 'jd', text: '老板，钱是身外物，健康最重要！' },
+    { role: 'boss', text: '那你把钱还给我，换我健康？' },
+  ],
+  [
+    { role: 'jd', text: '喜忧参半！有盈有亏，老板看开点。' },
+    { role: 'boss', text: '供应链嘛，就是这样……哎。🫠' },
+  ],
+];
+
+const DRAMA_NEUTRAL: Drama[] = [
+  [
+    { role: 'jd', text: '本次操作已完成，暂无数值变化，静候后续。' },
+    { role: 'boss', text: '行吧，先这样，继续走！🎲' },
+  ],
+  [
+    { role: 'boss', text: '啥也没变？这一步白走了？' },
+    { role: 'jd', text: '老板，有些流程就是要走一遍的，别急！' },
+  ],
+  [
+    { role: 'jd', text: '流程推进完毕，数据稳定，无需额外操作。' },
+    { role: 'boss', text: '好，稳定就好，稳定就好。😌' },
+  ],
+];
+
+function pickDrama(resultText: string): Drama {
+  const hasCashUp   = /Cash \+/.test(resultText) || /现货率 -/.test(resultText);
+  const hasCashDown = /Cash -/.test(resultText);
+  const hasSanUp    = /血压 \+/.test(resultText);
+  const hasSanDown  = /血压 -/.test(resultText);
+
+  const good = hasCashUp || hasSanUp;
+  const bad  = hasCashDown || hasSanDown;
+
+  let pool: Drama[];
+  if (good && bad)      pool = DRAMA_MIX;
+  else if (good)        pool = DRAMA_GOOD;
+  else if (bad)         pool = DRAMA_BAD;
+  else                  pool = DRAMA_NEUTRAL;
+
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/* ─── SceneDrama 打字机组件 ─── */
+function SceneDrama({ resultText }: { resultText: string }) {
+  const lines = useMemo(() => pickDrama(resultText), [resultText]);
+  const [shownCount, setShownCount] = useState(1);
+  const [typed, setTyped] = useState('');
+  const [lineDone, setLineDone] = useState(false);
+
+  useEffect(() => {
+    setShownCount(1);
+    setTyped('');
+    setLineDone(false);
+  }, [resultText]);
+
+  useEffect(() => {
+    const currentLine = lines[shownCount - 1];
+    if (!currentLine) return;
+    const full = currentLine.text;
+    if (typed.length < full.length) {
+      const t = setTimeout(() => setTyped(full.slice(0, typed.length + 1)), 38);
+      return () => clearTimeout(t);
+    } else {
+      setLineDone(true);
+      if (shownCount < lines.length) {
+        const t = setTimeout(() => {
+          setShownCount(n => n + 1);
+          setTyped('');
+          setLineDone(false);
+        }, 650);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [typed, shownCount, lines]);
+
+  return (
+    <div className="drama-stage">
+      {lines.slice(0, shownCount).map((line, i) => {
+        const isCurrent = i === shownCount - 1;
+        const displayText = isCurrent ? typed : line.text;
+        const showCursor = isCurrent && !lineDone;
+        return (
+          <div key={i} className={`drama-line ${line.role}`}>
+            <span className="drama-avatar">{line.role === 'boss' ? '🐱' : '👨‍💼'}</span>
+            <div className="drama-bubble">
+              {displayText}
+              {showCursor && <span className="drama-cursor" />}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ─── Result Modal (shown AFTER choice) ─── */
 function ResultModal({ text, onClose }: { text: string; onClose: () => void }) {
   return (
     <div className="modal-bg">
       <div className="modal modal-bounce">
         <h2 className="modal-title modal-title-pop">📢 结果</h2>
+        <SceneDrama resultText={text} />
         <p className="modal-desc">{text}</p>
         <button className="ob-btn" onClick={onClose}>确认</button>
       </div>
