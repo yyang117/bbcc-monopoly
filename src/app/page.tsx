@@ -335,10 +335,10 @@ function SvgJD({ scene }: { scene: SceneType }) {
 }
 
 const SCENE_LABELS: Record<SceneType, string> = {
-  good:    '✅ ROI 超预期，闭环跑通，可规模化复制',
-  bad:     '📉 执行层动作变形，需复盘 root cause',
-  mix:     '⚖️ 有亮点有 gap，核心链路保住，持续迭代',
-  neutral: '🔄 节点推进完毕，静待下阶段效果释放',
+  good:    '货顺利入仓，现货率上来了，这波操作没亏！',
+  bad:     '这单出问题了，钱或者血压都受影响，下次注意……',
+  mix:     '有赚有亏，供应链嘛，就这样，继续跑吧',
+  neutral: '流程走完了，数据没啥变化，等下一步通知吧',
 };
 const SCENE_EFFECTS: Record<SceneType, string> = {
   good: '🤝', bad: '💢', mix: '🤷', neutral: '📋',
