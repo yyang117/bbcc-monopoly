@@ -10,6 +10,49 @@ function formatCash(n: number): string {
   return n.toLocaleString();
 }
 
+/* ─── Confetti ─── */
+function ConfettiShower() {
+  const pieces = Array.from({ length: 48 }, (_, i) => i);
+  const colors = ['#f5a0c0','#ffe066','#7bed9f','#70a1ff','#ff6b81','#eccc68','#a29bfe'];
+  return (
+    <>
+      {pieces.map(i => (
+        <div
+          key={i}
+          className="confetti-piece"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `-${Math.random() * 20 + 10}px`,
+            background: colors[i % colors.length],
+            width: `${Math.random() * 8 + 6}px`,
+            height: `${Math.random() * 8 + 6}px`,
+            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+            animationDuration: `${Math.random() * 1.5 + 1.2}s`,
+            animationDelay: `${Math.random() * 0.8}s`,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
+/* ─── Stat display with flash on change ─── */
+function StatNum({ value, format }: { value: number; format?: (v: number) => string }) {
+  const prevRef = useRef(value);
+  const [flashClass, setFlashClass] = useState('');
+  const display = format ? format(value) : String(value);
+
+  useEffect(() => {
+    if (prevRef.current === value) return;
+    setFlashClass(value > prevRef.current ? 'stat-up' : 'stat-down');
+    prevRef.current = value;
+    const t = setTimeout(() => setFlashClass(''), 600);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  return <span className={`gs-num ${flashClass}`}>{display}</span>;
+}
+
 /* Real dice face with dots */
 function DiceFace({ value, size = 52 }: { value: number; size?: number }) {
   const dotSize = size * 0.2;
@@ -139,8 +182,9 @@ function WinScreen({ player, nickname, onRestart }: { player: PlayerState; nickn
 
   return (
     <div className="win-screen">
-      <div className="win-card fade-up">
-        <div className="win-emoji">🎉</div>
+      <ConfettiShower />
+      <div className="win-card fade-up win-glow">
+        <div className="win-emoji win-emoji-bounce">🎉</div>
         <h1 className="win-title">恭喜通关！</h1>
         <p className="win-sub">{nickname}老板，您已完成 BBCC 全链路流程！</p>
 
@@ -185,8 +229,9 @@ function GameOverScreen({ player, nickname, onRestart }: { player: PlayerState; 
 
   return (
     <div className="win-screen">
-      <div className="win-card fade-up">
-        <div className="win-emoji">😵</div>
+      <div className="gameover-flash" />
+      <div className="win-card fade-up screen-shake">
+        <div className="win-emoji win-emoji-bounce">😵</div>
         <h1 className="win-title" style={{ color: '#ef4444' }}>啊哦，Game Over!</h1>
         <p className="win-sub">{nickname}老板，{reason}</p>
         <div className="win-summary">
@@ -207,8 +252,8 @@ function GameOverScreen({ player, nickname, onRestart }: { player: PlayerState; 
 function ResultModal({ text, onClose }: { text: string; onClose: () => void }) {
   return (
     <div className="modal-bg">
-      <div className="modal fade-up">
-        <h2 className="modal-title">📢 结果</h2>
+      <div className="modal modal-bounce">
+        <h2 className="modal-title modal-title-pop">📢 结果</h2>
         <p className="modal-desc">{text}</p>
         <button className="ob-btn" onClick={onClose}>确认</button>
       </div>
@@ -229,6 +274,7 @@ export default function Home() {
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState('');
   const [resultText, setResultText] = useState<string | null>(null);
+  const [modalKey, setModalKey] = useState(0);
   const boardRef = useRef<HTMLDivElement>(null);
 
   const restartGame = useCallback(() => {
@@ -349,6 +395,7 @@ export default function Home() {
           checkGameOver(afterEffect);
           return afterEffect;
         } else {
+          setModalKey(k => k + 1);
           setCurrentEvent(event);
           return prev;
         }
@@ -444,6 +491,7 @@ export default function Home() {
       setCurrentEvent(null);
       setTimeout(() => {
         const event = triggerLLMEvent(17, player);
+        setModalKey(k => k + 1);
         setCurrentEvent(event);
         setMessage(`${bossName}，触发隐藏关卡——清理滞销！`);
       }, 2000);
@@ -503,37 +551,37 @@ export default function Home() {
       <div className="g-stats">
         <div className={`gs ${player.cash < 50000 ? 'gs-warn' : ''}`}>
           <span className="gs-icon">💰</span>
-          <span className="gs-num">{formatCash(player.cash)}</span>
+          <StatNum value={player.cash} format={formatCash} />
           <span className="gs-label">Cash</span>
         </div>
         <div className="gs">
           <span className="gs-icon">🏭</span>
-          <span className="gs-num">{player.inventoryFactory}</span>
+          <StatNum value={player.inventoryFactory} />
           <span className="gs-label">工厂</span>
         </div>
         <div className="gs">
           <span className="gs-icon">📦</span>
-          <span className="gs-num">{player.inventoryB}</span>
+          <StatNum value={player.inventoryB} />
           <span className="gs-label">B仓</span>
         </div>
         <div className="gs">
           <span className="gs-icon">📦</span>
-          <span className="gs-num">{player.inventoryC}</span>
+          <StatNum value={player.inventoryC} />
           <span className="gs-label">C仓</span>
         </div>
         <div className={`gs ${player.oor > 20 ? 'gs-warn' : ''}`}>
           <span className="gs-icon">🌐</span>
-          <span className="gs-num">{player.oor.toFixed(1)}%</span>
+          <StatNum value={player.oor} format={(v) => `${v.toFixed(1)}%`} />
           <span className="gs-label">现货率</span>
         </div>
         <div className="gs">
           <span className="gs-icon">📅</span>
-          <span className="gs-num">{player.doi}</span>
+          <StatNum value={player.doi} />
           <span className="gs-label">周转</span>
         </div>
         <div className={`gs ${player.sanity < 30 ? 'gs-warn' : ''}`}>
           <span className="gs-icon">🧠</span>
-          <span className="gs-num">{player.sanity}</span>
+          <StatNum value={player.sanity} />
           <span className="gs-label">血压</span>
         </div>
       </div>
@@ -599,9 +647,10 @@ export default function Home() {
               return (
                 <div
                   key={`${r}-${c}`}
-                  className={`tile-cell ${isCurrent ? 'tile-current' : ''} ${isPast ? 'tile-past' : ''} ${isFuture ? 'tile-future' : ''} tile-cat-${tile.category}`}
+                  className={`tile-cell ${isCurrent ? 'tile-current' : ''} ${isPast ? 'tile-past tile-trail' : ''} ${isFuture ? 'tile-future' : ''} tile-cat-${tile.category}`}
                 >
                   <div className="tile-inner">
+                    {isCurrent && <div className="tile-pulse-ring" />}
                     {isCurrent && (
                       <div className={`kitty-char ${isWalking ? 'walking' : 'idle'}`}>
                         <div className="kt-afro" />
@@ -642,22 +691,22 @@ export default function Home() {
       {/* Event modal — NO effectDescription shown */}
       {currentEvent && !subEvent && !resultText && (
         <div className="modal-bg">
-          <div className="modal fade-up">
-            <h2 className="modal-title">{currentEvent.title}</h2>
+          <div key={modalKey} className="modal modal-bounce">
+            <h2 className="modal-title modal-title-pop">{currentEvent.title}</h2>
             <p className="modal-desc">{currentEvent.description}</p>
             <div className="modal-btns">
               {currentEvent.optionA && (
-                <button className="choice-btn" onClick={() => handleChoice('A')}>
+                <button className="choice-btn choice-fly" style={{ animationDelay: '0.05s' }} onClick={() => handleChoice('A')}>
                   {currentEvent.optionA.label}
                 </button>
               )}
               {currentEvent.optionB && (
-                <button className="choice-btn" onClick={() => handleChoice('B')}>
+                <button className="choice-btn choice-fly" style={{ animationDelay: '0.15s' }} onClick={() => handleChoice('B')}>
                   {currentEvent.optionB.label}
                 </button>
               )}
               {currentEvent.optionC && (
-                <button className="choice-btn" onClick={() => handleChoice('C')}>
+                <button className="choice-btn choice-fly" style={{ animationDelay: '0.25s' }} onClick={() => handleChoice('C')}>
                   {currentEvent.optionC.label}
                 </button>
               )}
@@ -669,14 +718,14 @@ export default function Home() {
       {/* Sub-event modal */}
       {subEvent && !resultText && (
         <div className="modal-bg">
-          <div className="modal fade-up">
-            <h2 className="modal-title">{subEvent.title}</h2>
+          <div className="modal modal-bounce">
+            <h2 className="modal-title modal-title-pop">{subEvent.title}</h2>
             <p className="modal-desc">{subEvent.description}</p>
             <div className="modal-btns">
-              <button className="choice-btn" onClick={() => handleSubChoice('A')}>
+              <button className="choice-btn choice-fly" style={{ animationDelay: '0.05s' }} onClick={() => handleSubChoice('A')}>
                 {subEvent.optionA.label}
               </button>
-              <button className="choice-btn" onClick={() => handleSubChoice('B')}>
+              <button className="choice-btn choice-fly" style={{ animationDelay: '0.15s' }} onClick={() => handleSubChoice('B')}>
                 {subEvent.optionB.label}
               </button>
             </div>
@@ -691,3 +740,4 @@ export default function Home() {
     </div>
   );
 }
+

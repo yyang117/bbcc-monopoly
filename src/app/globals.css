@@ -50,6 +50,121 @@ body::before {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Modal title pop */
+.modal-title-pop { animation: titlePop 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes titlePop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(-6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Modal slide-up with bounce */
+.modal-bounce { animation: modalBounce 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes modalBounce {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Choice buttons fly in one by one */
+.choice-fly {
+  opacity: 0;
+  animation: choiceFly 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes choiceFly {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Stat flash on value change */
+@keyframes statFlashGreen {
+  0%   { color: #2ecc71; transform: scale(1.35); }
+  60%  { color: #2ecc71; transform: scale(1.1); }
+  100% { color: inherit; transform: scale(1); }
+}
+@keyframes statFlashRed {
+  0%   { color: #e74c3c; transform: scale(1.35); }
+  60%  { color: #e74c3c; transform: scale(1.1); }
+  100% { color: inherit; transform: scale(1); }
+}
+.stat-up   { animation: statFlashGreen 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
+.stat-down { animation: statFlashRed 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+/* Tile pulse for current tile */
+@keyframes tilePulse {
+  0%,100% { box-shadow: var(--glow-pink), 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 0 0 rgba(245,160,192,0); }
+  50%     { box-shadow: var(--glow-pink), 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 0 8px rgba(245,160,192,0); }
+}
+.tile-pulse-ring {
+  animation: tileRingExpand 1.2s ease-out infinite;
+  position: absolute; inset: -4px;
+  border-radius: 14px;
+  border: 2px solid rgba(245,160,192,0.5);
+  pointer-events: none;
+  z-index: 5;
+}
+@keyframes tileRingExpand {
+  0%   { opacity: 0.8; transform: scale(1); }
+  70%  { opacity: 0; transform: scale(1.18); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+/* Trail glow on past tiles */
+@keyframes trailFade {
+  from { opacity: 0; background: rgba(245,160,192,0.18); }
+  to   { opacity: 1; background: transparent; }
+}
+.tile-trail { animation: trailFade 0.5s ease-out both; }
+
+/* Confetti particle */
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0.3); opacity: 0; }
+}
+.confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 200;
+  animation: confettiFall linear forwards;
+}
+
+/* Game-over shake */
+.screen-shake { animation: screenShake 0.55s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+@keyframes screenShake {
+  10%,90%  { transform: translateX(-3px); }
+  20%,80%  { transform: translateX(5px); }
+  30%,50%,70% { transform: translateX(-5px); }
+  40%,60%  { transform: translateX(5px); }
+}
+
+/* Win rainbow glow */
+@keyframes winGlow {
+  0%   { box-shadow: 0 0 30px rgba(245,160,192,0.4), var(--shadow-lg); }
+  33%  { box-shadow: 0 0 40px rgba(100,200,255,0.3), var(--shadow-lg); }
+  66%  { box-shadow: 0 0 40px rgba(150,255,150,0.3), var(--shadow-lg); }
+  100% { box-shadow: 0 0 30px rgba(245,160,192,0.4), var(--shadow-lg); }
+}
+.win-glow { animation: winGlow 2.5s ease-in-out infinite; }
+
+/* Win emoji bounce */
+.win-emoji-bounce { animation: winEmojiBounce 0.7s cubic-bezier(0.34,1.8,0.64,1) both; }
+@keyframes winEmojiBounce {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Game over flash overlay */
+.gameover-flash {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(231,76,60,0.35);
+  pointer-events: none;
+  animation: flashOut 0.6s ease-out forwards;
+}
+@keyframes flashOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* ─── Onboarding ─── */
 .ob-screen {
   min-height: 100vh;
@@ -285,12 +400,12 @@ body::before {
 
 .board-grid-square {
   display: grid;
-  grid-template-columns: repeat(6, 90px);
-  grid-template-rows: repeat(5, 90px);
-  gap: 4px;
+  grid-template-columns: repeat(6, 120px);
+  grid-template-rows: repeat(5, 120px);
+  gap: 5px;
   background: rgba(0,0,0,0.25);
   border-radius: 16px;
-  padding: 6px;
+  padding: 8px;
   box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
 }
 
@@ -320,9 +435,9 @@ body::before {
   box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
-.tile-emoji-icon { font-size: 26px; line-height: 1; }
+.tile-emoji-icon { font-size: 32px; line-height: 1; }
 .tile-name-text {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text2);
   text-align: center;
@@ -457,8 +572,13 @@ body::before {
   border-color: rgba(245,160,192,0.55);
   box-shadow: var(--glow-pink), 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
   background: #585858;
+  animation: tilePulse 2s ease-in-out infinite;
 }
-.tile-past .tile-inner { opacity: 1; }
+.tile-past .tile-inner {
+  opacity: 1;
+  border-color: rgba(245,160,192,0.15);
+  background: rgba(245,160,192,0.06);
+}
 .tile-future .tile-inner { opacity: 1; }
 
 /* Category accents — refined left stripe */
@@ -701,13 +821,13 @@ body::before {
   .gs { min-width: 48px; padding: 6px 2px; }
   .gs-num { font-size: 12px; }
   .board-grid-square {
-    grid-template-columns: repeat(6, 56px);
-    grid-template-rows: repeat(5, 56px);
+    grid-template-columns: repeat(6, 72px);
+    grid-template-rows: repeat(5, 72px);
     gap: 3px;
-    padding: 4px;
+    padding: 5px;
   }
-  .tile-emoji-icon { font-size: 20px; }
-  .tile-name-text { font-size: 8.5px; }
+  .tile-emoji-icon { font-size: 22px; }
+  .tile-name-text { font-size: 9px; }
   .ob-card { padding: 30px 20px; }
   .win-card { padding: 28px 20px; }
 }
